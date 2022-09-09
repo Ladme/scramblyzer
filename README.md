@@ -3,7 +3,9 @@
 `scramblyzer` consists of several modules (see their list using `scramblyzer -h`) performing various analyses connected to lipid scrambling (lipid flip-flops).
 
 Module **composition** calculates lipid composition of a membrane (in time, if requested).
+
 Module **rate** calculates the percentage of scrambled lipids in time.
+
 Module **flipflops** calculates the number of flip-flop events that occured during the simulations.
 
 ## Dependencies
@@ -66,7 +68,7 @@ TOTAL | 463   | 456   | 919
 ```
 
 ```
-scramblyzer composition -c md.gro -f md.xtc -p `name PO4 PO1` -t 5
+scramblyzer composition -c md.gro -f md.xtc -p "name PO4 PO1" -t 5
 ```
 
 The program will calculate lipid composition of a membrane _in time_, based on the coordinates from `md.xtc` (the coordinates from `md.gro` will not be used). Lipids will be assigned to the upper or lower leaflet as described above and this assignment will be performed for every analyzed frame (in this case for trajectory frames every 5 ns, as set by the flag `-t`).

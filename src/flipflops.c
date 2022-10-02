@@ -288,7 +288,7 @@ int calc_lipid_flipflops(
 
     // printing output
     //printf("Detected flip-flops with spatial limit = %f nm and temporal limit = %d ns:\n", spatial_limit, temporal_limit);
-    printf("\nLipid | U->L | L->U | All \n");
+    printf("\n\nLipid | U->L | L->U | All \n");
     size_t total_upper_lower = 0, total_lower_upper = 0;
     for (size_t i = 0; i < composition->n_lipid_types; ++i) {
         total_upper_lower += flipflops_upper_lower[i];

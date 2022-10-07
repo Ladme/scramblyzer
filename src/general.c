@@ -112,7 +112,16 @@ lipid_composition_t *get_lipid_composition(
     // select all atoms
     atom_selection_t *all = select_system(system);
     // select all head identifiers of lipids
-    atom_selection_t *heads = smart_select(all, head_identifier, NULL); //select_atoms(all, head_identifier, &match_atom_name);
+    atom_selection_t *heads = smart_select(all, head_identifier, NULL);
+
+    // sanity check that heads were selected
+    if (heads == NULL || heads->n_atoms == 0) {
+        fprintf(stderr, "No atoms corresponding to head identifier ('%s') found.\n", head_identifier);
+        free(all);
+        free(heads);
+        free(composition);
+        return NULL;
+    }
 
 
     // load lipid names from default and from lipids.txt

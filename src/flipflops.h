@@ -20,6 +20,7 @@ int get_arguments_flipflops(
         char **argv,
         char **gro_file,
         char **xtc_file,
+        char **ndx_file,
         char **phosphates,
         float *spatial_limit,
         int *temporal_limit);
@@ -27,6 +28,7 @@ int get_arguments_flipflops(
 int calc_lipid_flipflops(
         const char *input_gro_file,
         const char *input_xtc_file,
+        const char *ndx_file,
         const char *head_identifier,
         const float spatial_limit,
         const int temporal_limit);

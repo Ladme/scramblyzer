@@ -28,7 +28,7 @@ rate             calculates percentage of scrambled lipids in time
 flipflops        calculates the number of flip-flop events
 ```
 
-Note that in all the modules, atoms can be selected using the [groan selection language](https://github.com/Ladme/groan#groan-selection-language). Currently, however, selecting atoms based on their ndx group is not supported for `scramblyzer` as `ndx` file reading is not implemented for this program.
+Note that in all the modules, atoms can be selected using the [groan selection language](https://github.com/Ladme/groan#groan-selection-language).
 
 As `scramblyzer` is primarily designed for the analysis of Martini simulations, it natively recognizes all standard (and some non-standard) Martini lipids (over 200 lipid types). You can also add your own lipids by supplying a file `lipids.txt` into the directory from which you call `scramblyzer`. In this file, `scramblyzer` expects one lipid type (residue name) per line. The maximal length of the lipid name is 4 characters. The `lipids.txt` file may contain comments initiated by `#`. The maximal length of each line is 1023 characters. 
 
@@ -42,6 +42,7 @@ Valid OPTIONS for the composition module:
 -h               print this message and exit
 -c STRING        gro file to read
 -f STRING        xtc file to read (optional)
+-n STRING        ndx file to read (optional, default: index.ndx)
 -o STRING        output file name (default: composition.xvg)
 -p STRING        selection of lipid head identifiers (default: name PO4)
 -t FLOAT         time interval between analyzed trajectory frames in ns (default: 1.0)
@@ -94,6 +95,7 @@ Valid OPTIONS for the rate module:
 -h               print this message and exit
 -c STRING        gro file to read
 -f STRING        xtc file to read
+-n STRING        ndx file to read (optional, default: index.ndx)
 -o STRING        output file name (default: rate.xvg)
 -p STRING        selection of lipid head identifiers (default: name PO4)
 -t FLOAT         time interval between analyzed trajectory frames in ns (default: 10.0)
@@ -133,6 +135,7 @@ Valid OPTIONS for the flipflops module:
 -h               print this message and exit
 -c STRING        gro file to read
 -f STRING        xtc file to read
+-n STRING        ndx file to read (optional, default: index.ndx)
 -p STRING        selection of lipid head identifiers (default: name PO4)
 -s FLOAT         how far into a leaflet must the head of the lipid move to count as flip-flop [in nm] (default: 1.5)
 -t INTEGER       how long must the lipid stay in a leaflet to count as flip-flop [in ns] (default: 10)

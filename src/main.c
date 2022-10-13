@@ -3,9 +3,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "src/composition.h"
-#include "src/rate.h"
-#include "src/flipflops.h"
+#include "composition.h"
+#include "rate.h"
+#include "flipflops.h"
 
 const char VERSION[] = "v2022/07/17";
 
@@ -33,45 +33,48 @@ int main(int argc, char **argv)
     if (!strcmp(argv[1], "composition")) {
         char *gro_file = NULL;
         char *xtc_file = NULL;
+        char *ndx_file = "index.ndx";
         char *output_file = "composition.xvg";
         char *phosphates = "name PO4";
         float dt = 1.0;
 
-        if (get_arguments_composition(argc, argv, &gro_file, &xtc_file, &output_file, &phosphates, &dt) != 0) {
+        if (get_arguments_composition(argc, argv, &gro_file, &xtc_file, &ndx_file, &output_file, &phosphates, &dt) != 0) {
             print_usage_composition();
             return 1;
         }
 
         //printf("\n>>> Lipid Composition Analysis by Scramblyzer %s <<<\n\n", VERSION);
-        calc_lipid_composition(gro_file, xtc_file, output_file, phosphates, dt);
+        calc_lipid_composition(gro_file, xtc_file, ndx_file, output_file, phosphates, dt);
     
     } else if (!strcmp(argv[1], "rate")) {
         char *gro_file = NULL;
         char *xtc_file = NULL;
+        char *ndx_file = "index.ndx";
         char *output_file = "rate.xvg";
         char *phosphates = "name PO4";
         float dt = 10.0;
 
-        if (get_arguments_rate(argc, argv, &gro_file, &xtc_file, &output_file, &phosphates, &dt) != 0) {
+        if (get_arguments_rate(argc, argv, &gro_file, &xtc_file, &ndx_file, &output_file, &phosphates, &dt) != 0) {
             print_usage_rate();
             return 1;
         }
 
-        calc_scrambling_rate(gro_file, xtc_file, output_file, phosphates, dt);
+        calc_scrambling_rate(gro_file, xtc_file, ndx_file, output_file, phosphates, dt);
 
     } else if (!strcmp(argv[1], "flipflops")) {
         char *gro_file = NULL;
         char *xtc_file = NULL;
+        char *ndx_file = "index.ndx";
         char *phosphates = "name PO4";
         float spatial_limit = 1.5;
         int temporal_limit = 10;
 
-        if (get_arguments_flipflops(argc, argv, &gro_file, &xtc_file, &phosphates, &spatial_limit, &temporal_limit) != 0) {
+        if (get_arguments_flipflops(argc, argv, &gro_file, &xtc_file, &ndx_file, &phosphates, &spatial_limit, &temporal_limit) != 0) {
             print_usage_flipflops();
             return 1;
         }
 
-        calc_lipid_flipflops(gro_file, xtc_file, phosphates, spatial_limit, temporal_limit);
+        calc_lipid_flipflops(gro_file, xtc_file, ndx_file, phosphates, spatial_limit, temporal_limit);
     
     } else if (!strcmp(argv[1], "-h")) {
         print_usage(argv[0]);

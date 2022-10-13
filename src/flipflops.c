@@ -99,6 +99,7 @@ void print_usage_flipflops(void)
     printf("-h               print this message and exit\n");
     printf("-c STRING        gro file to read\n");
     printf("-f STRING        xtc file to read\n");
+    printf("-n STRING        ndx file to read (optional, default: index.ndx)\n");
     printf("-p STRING        selection of lipid head identifiers (default: name PO4)\n");
     printf("-s FLOAT         how far into a leaflet must the head of the lipid move to count as flip-flop [in nm] (default: 1.5)\n");
     printf("-t INTEGER       how long must the lipid stay in a leaflet to count as flip-flop [in ns] (default: 10)\n");
@@ -110,6 +111,7 @@ int get_arguments_flipflops(
         char **argv,
         char **gro_file,
         char **xtc_file,
+        char **ndx_file,
         char **phosphates,
         float *spatial_limit,
         int *temporal_limit) 
@@ -117,7 +119,7 @@ int get_arguments_flipflops(
     int gro_specified = 0, xtc_specified = 0;
 
     int opt = 0;
-    while((opt = getopt(argc - 1, argv + 1, "c:f:p:s:t:h")) != -1) {
+    while((opt = getopt(argc - 1, argv + 1, "c:f:n:p:s:t:h")) != -1) {
         switch (opt) {
         // help
         case 'h':
@@ -131,6 +133,10 @@ int get_arguments_flipflops(
         case 'f':
             *xtc_file = optarg;
             xtc_specified = 1;
+            break;
+        // ndx file
+        case 'n':
+            *ndx_file = optarg;
             break;
         // phosphates identifier
         case 'p':
@@ -177,6 +183,7 @@ int get_arguments_flipflops(
 void print_arguments_flipflops(
         const char *gro_file,
         const char *xtc_file,
+        const char *ndx_file,
         const char *phosphates,
         const float spatial_limit,
         const int temporal_limit)
@@ -184,6 +191,7 @@ void print_arguments_flipflops(
     printf("Parameters for FlipFlops Analysis:\n");
     printf(">>> gro file:         %s\n", gro_file);
     printf(">>> xtc file:         %s\n", xtc_file);
+    printf(">>> ndx file:         %s\n", ndx_file);
     printf(">>> lipid heads:      %s\n", phosphates);
     printf(">>> spatial limit:    %f nm\n", spatial_limit);
     printf(">>> temporal limit:   %d ns\n", temporal_limit);
@@ -193,22 +201,29 @@ void print_arguments_flipflops(
 int calc_lipid_flipflops(
         const char *input_gro_file,
         const char *input_xtc_file,
+        const char *ndx_file,
         const char *head_identifier,
         const float spatial_limit,
         const int temporal_limit)
 {
-    print_arguments_flipflops(input_gro_file, input_xtc_file, head_identifier, spatial_limit, temporal_limit);
+    print_arguments_flipflops(input_gro_file, input_xtc_file, ndx_file, head_identifier, spatial_limit, temporal_limit);
 
     // read gro file
     system_t *system = load_gro(input_gro_file);
     if (system == NULL) return 1;
 
+    // read ndx file
+    dict_t *ndx_groups = read_ndx(ndx_file, system);
+
     // get lipids present in the system
-    lipid_composition_t *composition = get_lipid_composition(system, head_identifier);
+    lipid_composition_t *composition = get_lipid_composition(system, head_identifier, ndx_groups);
     if (composition == NULL) {
         free(system);
+        dict_destroy(ndx_groups);
         return 1;
     }
+
+    dict_destroy(ndx_groups);
 
     // if there are no lipids
     if (composition->n_lipid_types < 1) {

@@ -20,6 +20,7 @@ int get_arguments_composition(
         char **argv,
         char **gro_file,
         char **xtc_file,
+        char **ndx_file,
         char **output_file,
         char **phosphates,
         float *dt);
@@ -54,6 +55,7 @@ int get_arguments_composition(
 int calc_lipid_composition(
         const char *input_gro_file,
         const char *input_xtc_file,
+        const char *ndx_file,
         const char *output_file,
         const char *head_identifier,
         const float dt);

@@ -7,6 +7,13 @@
 // frequency of printing during the calculation
 static const int PROGRESS_FREQ = 10000;
 
+/*! @brief Identifier for all lipids in the classify_lipids() dictionaries
+ * 
+ * @paragraph Details
+ * @@ is used to avoid any potential overlap with real lipid name.
+ */
+static const char ALL_LIPIDS_IDENTIFIER[50] = "@@TOTAL@@";
+
 /*! @brief Assigns all lipids from the lipids dictionary into upper and lower leaflets. */
 static void classify_lipids(
         lipid_composition_t *composition,
@@ -48,6 +55,7 @@ void print_usage_composition(void)
     printf("-h               print this message and exit\n");
     printf("-c STRING        gro file to read\n");
     printf("-f STRING        xtc file to read (optional)\n");
+    printf("-n STRING        ndx file to read (optional, default: index.ndx)\n");
     printf("-o STRING        output file name (default: composition.xvg)\n");
     printf("-p STRING        selection of lipid head identifiers (default: name PO4)\n");
     printf("-t FLOAT         time interval between analyzed trajectory frames in ns (default: 1.0)\n");
@@ -59,6 +67,7 @@ int get_arguments_composition(
         char **argv,
         char **gro_file,
         char **xtc_file,
+        char **ndx_file,
         char **output_file,
         char **phosphates,
         float *dt) 
@@ -66,7 +75,7 @@ int get_arguments_composition(
     int gro_specified = 0;
 
     int opt = 0;
-    while((opt = getopt(argc - 1, argv + 1, "c:f:o:p:t:h")) != -1) {
+    while((opt = getopt(argc - 1, argv + 1, "c:f:n:o:p:t:h")) != -1) {
         switch (opt) {
         // help
         case 'h':
@@ -79,6 +88,10 @@ int get_arguments_composition(
         // xtc file to read
         case 'f':
             *xtc_file = optarg;
+            break;
+        // ndx file
+        case 'n':
+            *ndx_file = optarg;
             break;
         // output file name
         case 'o':
@@ -113,6 +126,7 @@ int get_arguments_composition(
 void print_arguments_composition(
         const char *gro_file,
         const char *xtc_file,
+        const char *ndx_file,
         const char *output_file,
         const char *phosphates,
         const float timestep)
@@ -120,6 +134,7 @@ void print_arguments_composition(
     printf("Parameters for Composition Analysis:\n");
     printf(">>> gro file:         %s\n", gro_file);
     printf(">>> xtc file:         %s\n", xtc_file);
+    printf(">>> ndx file:         %s\n", ndx_file);
     printf(">>> output file:      %s\n", output_file);
     printf(">>> lipid heads:      %s\n", phosphates);
     printf(">>> time step:        %f ns\n", timestep);
@@ -129,24 +144,31 @@ void print_arguments_composition(
 int calc_lipid_composition(
         const char *input_gro_file,
         const char *input_xtc_file,
+        const char *ndx_file,
         const char *output_file,
         const char *head_identifier,
         const float dt)
 {
     if (input_xtc_file != NULL) {
-        print_arguments_composition(input_gro_file, input_xtc_file, output_file, head_identifier, dt);
+        print_arguments_composition(input_gro_file, input_xtc_file, ndx_file, output_file, head_identifier, dt);
     }
 
     // read gro file
     system_t *system = load_gro(input_gro_file);
     if (system == NULL) return 1;
 
+    // read ndx file
+    dict_t *ndx_groups = read_ndx(ndx_file, system);
+
     // get lipids present in the system
-    lipid_composition_t *composition = get_lipid_composition(system, head_identifier);
+    lipid_composition_t *composition = get_lipid_composition(system, head_identifier, ndx_groups);
     if (composition == NULL) {
         free(system);
+        dict_destroy(ndx_groups);
         return 1;
     }
+
+    dict_destroy(ndx_groups);
 
     // if there are no lipids
     if (composition->n_lipid_types < 1) {

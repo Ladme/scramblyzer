@@ -84,6 +84,7 @@ void print_usage_rate(void)
     printf("-h               print this message and exit\n");
     printf("-c STRING        gro file to read\n");
     printf("-f STRING        xtc file to read\n");
+    printf("-n STRING        ndx file to read (optional, default: index.ndx)\n");
     printf("-o STRING        output file name (default: rate.xvg)\n");
     printf("-p STRING        selection of lipid head identifiers (default: name PO4)\n");
     printf("-t FLOAT         time interval between analyzed trajectory frames in ns (default: 10.0)\n");
@@ -95,6 +96,7 @@ int get_arguments_rate(
         char **argv,
         char **gro_file,
         char **xtc_file,
+        char **ndx_file,
         char **output_file,
         char **phosphates,
         float *dt) 
@@ -102,7 +104,7 @@ int get_arguments_rate(
     int gro_specified = 0, xtc_specified = 0;
 
     int opt = 0;
-    while((opt = getopt(argc - 1, argv + 1, "c:f:o:p:t:h")) != -1) {
+    while((opt = getopt(argc - 1, argv + 1, "c:f:n:o:p:t:h")) != -1) {
         switch (opt) {
         // help
         case 'h':
@@ -116,6 +118,10 @@ int get_arguments_rate(
         case 'f':
             *xtc_file = optarg;
             xtc_specified = 1;
+            break;
+        // ndx file
+        case 'n':
+            *ndx_file = optarg;
             break;
         // output file name
         case 'o':
@@ -150,6 +156,7 @@ int get_arguments_rate(
 void print_arguments_rate(
         const char *gro_file,
         const char *xtc_file,
+        const char *ndx_file,
         const char *output_file,
         const char *phosphates,
         const float timestep)
@@ -157,6 +164,7 @@ void print_arguments_rate(
     printf("Parameters for Scrambling Rate Analysis:\n");
     printf(">>> gro file:         %s\n", gro_file);
     printf(">>> xtc file:         %s\n", xtc_file);
+    printf(">>> ndx file:         %s\n", ndx_file);
     printf(">>> output file:      %s\n", output_file);
     printf(">>> lipid heads:      %s\n", phosphates);
     printf(">>> time step:        %f ns\n", timestep);
@@ -166,22 +174,29 @@ void print_arguments_rate(
 int calc_scrambling_rate(
         const char *input_gro_file,
         const char *input_xtc_file,
+        const char *ndx_file,
         const char *output_file,
         const char *head_identifier,
         const float dt)
 {
-    print_arguments_rate(input_gro_file, input_xtc_file, output_file, head_identifier, dt);
+    print_arguments_rate(input_gro_file, input_xtc_file, ndx_file, output_file, head_identifier, dt);
 
     // read gro file
     system_t *system = load_gro(input_gro_file);
     if (system == NULL) return 1;
 
+    // read ndx file
+    dict_t *ndx_groups = read_ndx(ndx_file, system);
+
     // get lipids present in the system
-    lipid_composition_t *composition = get_lipid_composition(system, head_identifier);
+    lipid_composition_t *composition = get_lipid_composition(system, head_identifier, ndx_groups);
     if (composition == NULL) {
         free(system);
+        dict_destroy(ndx_groups);
         return 1;
     }
+
+    dict_destroy(ndx_groups);
 
     // if there are no lipids
     if (composition->n_lipid_types < 1) {

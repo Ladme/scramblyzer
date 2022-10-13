@@ -3,8 +3,6 @@
 
 #include "general.h"
 
-const char ALL_LIPIDS_IDENTIFIER[50] = "@@TOTAL@@";
-
 /*! @brief Maximal length of a line in lipids.txt */
 static const size_t MAX_LINE_LENGTH = 1024;
 /*! @brief File to read user-defined lipid names/types from */
@@ -44,7 +42,7 @@ char **read_lipid_names(size_t *n_lipid_names)
     // copy default lipids into the new array
     for (size_t i = 0; i < n_default; ++i) {
         lipid_names[i] = calloc(1, 10);
-        strncpy(lipid_names[i], default_names_split[i], 10);
+        strncpy(lipid_names[i], default_names_split[i], 9);
     }
     free(default_names_split);
 
@@ -82,7 +80,7 @@ char **read_lipid_names(size_t *n_lipid_names)
             }
 
             lipid_names[*n_lipid_names] = calloc(1, 10);
-            strncpy(lipid_names[*n_lipid_names], line, 10);
+            strncpy(lipid_names[*n_lipid_names], line, 9);
             (*n_lipid_names)++;
         }
 
@@ -104,7 +102,8 @@ void deallocate_lipid_types(dict_t *lipids_dictionary, char **lipid_names, size_
 
 lipid_composition_t *get_lipid_composition(
         system_t *system,
-        const char *head_identifier) 
+        const char *head_identifier,
+        dict_t *ndx_groups) 
 {
     // create lipid composition structure
     lipid_composition_t *composition = calloc(1, sizeof(lipid_composition_t));
@@ -112,7 +111,7 @@ lipid_composition_t *get_lipid_composition(
     // select all atoms
     atom_selection_t *all = select_system(system);
     // select all head identifiers of lipids
-    atom_selection_t *heads = smart_select(all, head_identifier, NULL);
+    atom_selection_t *heads = smart_select(all, head_identifier, ndx_groups);
 
     // sanity check that heads were selected
     if (heads == NULL || heads->n_atoms == 0) {

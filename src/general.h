@@ -6,13 +6,6 @@
 
 #include <groan.h>
 
-/*! @brief Identifier for all lipids in the classify_lipids() dictionaries
- * 
- * @paragraph Details
- * @@ is used to avoid any potential overlap with real lipid name.
- */
-const char ALL_LIPIDS_IDENTIFIER[50];
-
 /*! @brief Lipid composition of a membrane. See get_lipid_composition() for more details. */
 typedef struct lipid_composition {
     atom_selection_t *all_lipid_atoms;
@@ -68,7 +61,8 @@ void deallocate_lipid_types(dict_t *lipids_dictionary, char **lipid_names, size_
  */
 lipid_composition_t *get_lipid_composition(
         system_t *system,
-        const char *head_identifier);
+        const char *head_identifier,
+        dict_t *ndx_groups);
 
 
 /*! @brief Deallocates memory for lipid_composition_t strucutre */

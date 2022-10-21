@@ -100,6 +100,7 @@ void print_usage_flipflops(void)
     printf("-c STRING        gro file to read\n");
     printf("-f STRING        xtc file to read\n");
     printf("-n STRING        ndx file to read (optional, default: index.ndx)\n");
+    printf("-o STRING        output file (default: positions.xvg)\n");
     printf("-p STRING        selection of lipid head identifiers (default: name PO4)\n");
     printf("-s FLOAT         how far into a leaflet must the head of the lipid move to count as flip-flop [in nm] (default: 1.5)\n");
     printf("-t INTEGER       how long must the lipid stay in a leaflet to count as flip-flop [in ns] (default: 10)\n");

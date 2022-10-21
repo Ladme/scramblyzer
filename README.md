@@ -4,6 +4,8 @@
 
 Module **composition** calculates lipid composition of a membrane (in time, if requested).
 
+Module **positions** calculates position of each lipid head in time.
+
 Module **rate** calculates the percentage of scrambled lipids in time.
 
 Module **flipflops** calculates the number of flip-flop events that occured during the simulations.
@@ -24,6 +26,7 @@ Usage: scramblyzer MODULE OPTIONS
 
 MODULES
 composition      calculates lipid composition of a membrane
+positions        calculates position of each lipid head in time
 rate             calculates percentage of scrambled lipids in time
 flipflops        calculates the number of flip-flop events
 ```
@@ -33,6 +36,29 @@ Note that in all the modules, atoms can be selected using the [groan selection l
 As `scramblyzer` is primarily designed for the analysis of Martini simulations, it natively recognizes all standard (and some non-standard) Martini lipids (over 200 lipid types). You can also add your own lipids by supplying a file `lipids.txt` into the directory from which you call `scramblyzer`. In this file, `scramblyzer` expects one lipid type (residue name) per line. The maximal length of the lipid name is 4 characters. The `lipids.txt` file may contain comments initiated by `#`. The maximal length of each line is 1023 characters. 
 
 You can also add any additional lipids directly into the `scramblyzer` code (by modifying the variable `default_lipid_names` in the function `read_lipid_names` located in the file `src/general.c`) and recompiling the program using `make groan=PATH_TO_GROAN`.
+
+## Module: positions
+
+Gets the z-coordinate for each specified atom in each specified trajectory frame and writes it into an output file.
+
+### Options
+```
+Valid OPTIONS for the positions module:
+-h               print this message and exit
+-c STRING        gro file to read
+-f STRING        xtc file to read
+-n STRING        ndx file to read (optional, default: index.ndx)
+-o STRING        output file name (default: positions.xvg)
+-p STRING        selection of lipid head identifiers (default: name PO4)
+-t FLOAT         time interval between analyzed frames [in ns] (default: 1.0)
+```
+
+### Example
+```
+scramblyzer positions -c md.gro -f md.xtc -t 5
+```
+
+The program will get z-coordinates of all atoms with atom name `PO4` (default option of the flag `-p`) for frames every 5 ns (flag `-t`) and write these coordinates into `positions.xvg` (default option of the flag `-o`). The output file can be visualized using `xmgrace` (`xmgrace -nxy positions.xvg`).
 
 ## Module: composition
 

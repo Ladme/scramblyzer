@@ -137,7 +137,7 @@ int calc_lipid_positions(
         }
 
         // loop through heads, get their positions and write them into output file
-        fprintf(output, "%f ", system->time);
+        fprintf(output, "%f ", system->time / 1000.0);
         for (size_t i = 0; i < heads->n_atoms; ++i) {
             fprintf(output, "%f ", heads->atoms[i]->position[2]);
         }

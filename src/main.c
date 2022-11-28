@@ -8,7 +8,7 @@
 #include "flipflops.h"
 #include "positions.h"
 
-const char VERSION[] = "v2022/07/17";
+const char VERSION[] = "v2022/11/28";
 
 
 void print_usage(const char *program_name)

@@ -1,0 +1,20 @@
+{
+    "title": "Scramblyzer - Toolbox For Analyzing Lipid Scrambling",
+    "description": "Toolbox For Analyzing Lipid Scrambling From Gromacs Simulation Trajectories",
+    "creators": [
+        {
+            "name": "Ladislav Bartoš",
+            "affiliation": "CEITEC – Central European Institute of Technology, Masaryk University, Czech Republic"
+        }
+    ],
+    "keywords": [
+        "gromacs",
+        "molecular dynamics",
+        "lipid membrane",
+        "scrambling",
+        "scramblase"
+    ],
+    "license": "mit-license",
+    "access_right": "open",
+    "upload_type": "software"
+}

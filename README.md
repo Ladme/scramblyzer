@@ -1,5 +1,7 @@
 # scramblyzer: Toolbox For Analyzing Lipid Scrambling
 
+[![DOI](https://zenodo.org/badge/534586571.svg)](https://zenodo.org/badge/latestdoi/534586571)
+
 `scramblyzer` consists of several modules (see their list using `scramblyzer -h`) performing various analyses connected to lipid scrambling (lipid flip-flops).
 
 Module **composition** calculates lipid composition of a membrane (in time, if requested).
